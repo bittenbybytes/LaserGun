@@ -11,6 +11,10 @@ struct RectanglePoints{
 	cv::Point b;
 };
 
+void detectTargets(cv::Mat camImg, cv::Mat& targetSegments);
+
+int detectHit(cv::Mat& targetSegments, const cv::Point shotPos);
+
 void onMouse(int event, int x, int y, int d, void* points);
 
 bool isPointWithinArea(cv::Point point, RectanglePoints area);
@@ -48,6 +52,8 @@ int main() {
 	RectanglePoints rectPoints = { {0,0}, {0,0} };
 	cv::setMouseCallback(winname, onMouse, &rectPoints);
 
+	cv::Mat targetSegments;
+
 	do{
 		// request new frame
 		cv::Mat frame;
@@ -77,7 +83,8 @@ int main() {
 				// record shot position
 				shots.push_back(max_loc);
 
-				if(isPointWithinArea(max_loc, rectPoints))
+				if(isPointWithinArea(max_loc, rectPoints) ||
+						detectHit(targetSegments, max_loc) > 0)
 				{
 					// shot landed within target area
 					std::cout << "Target hit at: " << max_loc.x << " " << max_loc << std::endl;
@@ -124,10 +131,15 @@ int main() {
 		// wait for key input for 30ms
 		key = cv::waitKey(30);
 
-		if (key == 'r')
+		switch(key)
 		{
+		case 'r':
 			shots.clear();
 			hits.clear();
+			break;
+
+		case 'd':
+			detectTargets(frame, targetSegments);
 		}
 
 	}while(key != 'q');
@@ -164,7 +176,41 @@ void onMouse(int event, int x, int y, int d, void* points)
 	//std::cout << "x=" << pt.x << "\t y=" << pt.y << "\n";
 }
 
+
 bool isPointWithinArea(cv::Point point, RectanglePoints area)
 {
 	return isWithinRange(point.x, area.a.x, area.b.x) && isWithinRange(point.y, area.a.y, area.b.y);
+}
+
+
+void detectTargets(cv::Mat camImg, cv::Mat& targetSegments)
+{
+	// convert to grayscale
+	cv::Mat camImgGrayScale(camImg.size(), CV_8UC1);
+	cv::cvtColor(camImg, camImgGrayScale, CV_RGB2GRAY);
+
+	cv::Mat threshold;
+	cv::threshold(camImgGrayScale, threshold, 220,255, cv::THRESH_BINARY);
+
+	int dilation_type = cv::MORPH_RECT;
+
+	int dilation_size = 2;
+
+	cv::Mat element = cv::getStructuringElement( dilation_type,
+									   cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),
+									   cv::Point( dilation_size, dilation_size ) );
+	/// Apply the dilation operation
+	cv::erode(threshold, targetSegments, element);
+
+	cv::namedWindow("Threshold");
+	cv::imshow("Threshold", targetSegments);
+
+}
+
+int detectHit(cv::Mat& targetSegments, const cv::Point shotPos)
+{
+	if (targetSegments.size() == cv::Size(0,0))
+		return -1;
+
+	return (int)(targetSegments.at<unsigned char>(shotPos));
 }
