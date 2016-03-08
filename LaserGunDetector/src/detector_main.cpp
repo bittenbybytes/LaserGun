@@ -1,5 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <fstream>
 #include <sstream>     // std::string, std::to_string
 using namespace cv;
 
@@ -7,6 +8,11 @@ using namespace cv;
 int main() {
 	// open any available webcam
 	VideoCapture cam(-1);
+
+	std::fstream targets("/dev/ttyUSB0");
+
+	if(!targets.is_open())
+		std::cout << "Error connecting to targets" << std::endl;
 
 	if(!cam.isOpened())
 		return -1; // no webcam available
@@ -55,6 +61,13 @@ int main() {
 
 					// record hit position
 					hits.push_back(max_loc);
+
+					if(targets.is_open())
+					{
+						targets << 'h';
+						targets.flush();
+					}
+
 				}
 			}
 
