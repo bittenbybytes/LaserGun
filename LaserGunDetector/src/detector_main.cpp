@@ -2,8 +2,23 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>     // std::string, std::to_string
-using namespace cv;
+#include "detector_main.h"
+#ifdef WIN32
+#include <windows.h> // Beep
+#endif
 
+struct RectanglePoints{
+	cv::Point a;
+	cv::Point b;
+};
+
+void detectTargets(cv::Mat camImg, cv::Mat& targetSegments);
+
+int detectHit(cv::Mat& targetSegments, const cv::Point shotPos);
+
+void onMouse(int event, int x, int y, int d, void* points);
+
+bool isPointWithinArea(cv::Point point, RectanglePoints area);
 
 int main() {
 	// open any available webcam
