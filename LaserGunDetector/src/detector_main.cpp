@@ -14,7 +14,9 @@ struct RectanglePoints{
 	cv::Point b;
 };
 
-void detectTargets(const cv::Mat& camImg, cv::Mat& targetSegments);
+void detectTargets(cv::VideoCapture& cam, TargetController& targetController, cv::Mat& targetSegments);
+
+void detectSegment(const cv::Mat& camImg, cv::Mat& targetSegments, const unsigned char idx = 1);
 
 int detectHit(cv::Mat& targetSegments, const cv::Point shotPos);
 
@@ -105,7 +107,7 @@ int main() {
 					Beep(1000, 50);
 #endif
 
-					target.hit(segmentHit>0);
+					target.hit(segmentHit-1);
 
 					// record hit position
 					hits.push_back(max_loc);
@@ -153,7 +155,7 @@ int main() {
 			break;
 
 		case 'd':
-			detectTargets(frame, targetSegments);
+			detectTargets(cam, target, targetSegments);
 			break;
 
 		case 'D':
@@ -204,8 +206,59 @@ bool isPointWithinArea(cv::Point point, RectanglePoints area)
 	return isWithinRange(point.x, area.a.x, area.b.x) && isWithinRange(point.y, area.a.y, area.b.y);
 }
 
+void detectTargets(cv::VideoCapture& cam, TargetController& targetController, cv::Mat& targetSegments)
+{
+	int delay = 4000;
 
-void detectTargets(const cv::Mat& camImg, cv::Mat& targetSegments)
+	// clear target segments image
+	targetSegments.setTo(0);
+
+	// lower all targets
+	targetController.alldown();
+
+	// wait till complete
+	cv::waitKey(delay);
+
+	const int numTargets = 2;
+
+	for (int idx = 0; idx < numTargets; ++idx)
+	{
+		// put up target
+		targetController.up(idx);
+
+		// wait till complete
+		cv::waitKey(delay);
+
+		// get camera image
+		cv::Mat frame;
+		bool bnewFrame;
+
+		for (int var = 0; var < 10; ++var)
+		{
+			bnewFrame = cam.read(frame);
+			imshow("DEBUG:targetdetect",frame);
+			cv::waitKey(1);
+		}
+
+
+		if(!bnewFrame)
+		{
+			std::cout << "Error reading frame" << std::endl;
+			return;
+		}
+
+		// detect target Segment
+		detectSegment(frame, targetSegments, idx + 1);
+
+		// lower target
+		targetController.down(idx);
+
+		// wait till complete
+		cv::waitKey(delay);
+	}
+}
+
+void detectSegment(const cv::Mat& camImg, cv::Mat& targetSegments, const unsigned char idx)
 {
 	// convert to hsv
 	cv::Mat camImgHSV(camImg.size(), CV_8UC3);
@@ -215,7 +268,7 @@ void detectTargets(const cv::Mat& camImg, cv::Mat& targetSegments)
 
 	unsigned char rotation = 128; // 255 = red
 	cv::add(camImgHSV, cv::Scalar(rotation, 0, 0), camImgHSV);
-	cv::inRange(camImgHSV, cv::Scalar(112, 140, 128), cv::Scalar(144, 255, 255), threshold);
+	cv::inRange(camImgHSV, cv::Scalar(112, 100, 100), cv::Scalar(144, 255, 255), threshold);
 
 	int dilation_type = cv::MORPH_RECT;
 
@@ -225,7 +278,15 @@ void detectTargets(const cv::Mat& camImg, cv::Mat& targetSegments)
 									   cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),
 									   cv::Point( dilation_size, dilation_size ) );
 	/// Apply the dilation operation
-	cv::erode(threshold, targetSegments, element);
+	cv::erode(threshold, threshold, element);
+
+	threshold /= 255;
+	threshold *= (idx * 64);
+
+	if(targetSegments.dims == 0)
+		threshold.copyTo(targetSegments);
+	else
+		cv::add(targetSegments, threshold, targetSegments);
 
 	cv::namedWindow("Threshold");
 	cv::imshow("Threshold", targetSegments);
@@ -237,5 +298,5 @@ int detectHit(cv::Mat& targetSegments, const cv::Point shotPos)
 	if (targetSegments.size() == cv::Size(0,0))
 		return -1;
 
-	return (int)(targetSegments.at<unsigned char>(shotPos));
+	return (int)(targetSegments.at<unsigned char>(shotPos)/64);
 }

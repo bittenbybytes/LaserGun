@@ -7,6 +7,8 @@
 
 #include "TargetController.h"
 
+#include <opencv2/opencv.hpp>
+
 #ifndef WIN32
 
 #endif
@@ -18,30 +20,40 @@ static const char upCmd[nTargets] = {'u','U'};
 
 #define DEBUGOUT std::cout
 
+const int delay = 3000;
+
 void TargetController::init()
 {
 #ifdef WIN32
 	device.open("COM0");
 #else
-	device.open("/dev/ttyUSB1");
+	device.open("/dev/ttyUSB0");
 #endif
 }
 
 void TargetController::down(int num)
 {
 	if(check(num))
+	{
 		device << downCmd[num] << std::endl;
+		cv::waitKey(delay);
+	}
+
 }
 
 void TargetController::up(int num)
 {
 	if(check(num))
+	{
 		device << upCmd[num] << std::endl;
+		cv::waitKey(delay);
+	}
+
 }
 
 void TargetController::alldown()
 {
-	for (int num = 1; num < nTargets; num++)
+	for (int num = 0; num < nTargets; num++)
 	{
 		down(num);
 	}
@@ -49,7 +61,7 @@ void TargetController::alldown()
 
 void TargetController::allup()
 {
-	for (int num = 1; num < nTargets; num++)
+	for (int num = 0; num < nTargets; num++)
 	{
 		up(num);
 	}
@@ -62,7 +74,7 @@ TargetController::TargetController()
 
 bool TargetController::check(int num)
 {
-	if(num < 0 && num > nTargets)
+	if(num < 0 && num >= nTargets)
 	{
 		DEBUGOUT << "Invalid target number" << std::endl;
 		return false;
