@@ -14,7 +14,7 @@ struct RectanglePoints{
 	cv::Point b;
 };
 
-void detectTargets(cv::Mat camImg, cv::Mat& targetSegments);
+void detectTargets(const cv::Mat& camImg, cv::Mat& targetSegments);
 
 int detectHit(cv::Mat& targetSegments, const cv::Point shotPos);
 
@@ -71,7 +71,7 @@ int main() {
 
 		if (bNewFrame) {
 			// display frame if valid
-			dispFrame = frame;
+			dispFrame = frame.clone();
 			static int backofCount = 0;
 
 			// convert to grayscale
@@ -205,30 +205,18 @@ bool isPointWithinArea(cv::Point point, RectanglePoints area)
 }
 
 
-void detectTargets(cv::Mat camImg, cv::Mat& targetSegments)
+void detectTargets(const cv::Mat& camImg, cv::Mat& targetSegments)
 {
-#ifdef TH_GRAYSCALE
-
-	// convert to grayscale
-	cv::Mat camImgGrayScale(camImg.size(), CV_8UC1);
-	cv::cvtColor(camImg, camImgGrayScale, CV_RGB2GRAY);
-
-	cv::Mat threshold;
-	cv::threshold(camImgGrayScale, threshold, 220,255, cv::THRESH_BINARY);
-
-#else
-
 	// convert to hsv
-	cv::Mat camImgHSV;
-	cv::cvtColor(camImg, camImgHSV, CV_RGB2HSV_FULL);
+	cv::Mat camImgHSV(camImg.size(), CV_8UC3);
+	cv::cvtColor(camImg, camImgHSV, CV_BGR2HSV_FULL);
 
 	cv::Mat threshold;
 
-	int rotation = 128 - 255; // 255 = red
-	//cv::add(camImgHSV, cv::Scalar(rotation, 0, 0), camImgHSV);
-	//cv::inRange(camImgHSV, cv::Scalar(114, 135, 135), cv::Scalar(142, 255, 255), threshold);
-	cv::inRange(camImgHSV, cv::Scalar(150, 115, 115), cv::Scalar(195, 255, 255), threshold);
-#endif
+	unsigned char rotation = 128; // 255 = red
+	cv::add(camImgHSV, cv::Scalar(rotation, 0, 0), camImgHSV);
+	cv::inRange(camImgHSV, cv::Scalar(112, 140, 128), cv::Scalar(144, 255, 255), threshold);
+
 	int dilation_type = cv::MORPH_RECT;
 
 	int dilation_size = 2;
