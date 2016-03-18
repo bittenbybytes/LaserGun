@@ -24,6 +24,10 @@ void onMouse(int event, int x, int y, int d, void* points);
 
 bool isPointWithinArea(cv::Point point, RectanglePoints area);
 
+void buttonCallback(int i, void* userdata)
+{
+	std::cout << "Button pressed" << std::endl;
+}
 
 int main() {
 	// open any available webcam
@@ -277,8 +281,11 @@ void detectSegment(const cv::Mat& camImg, cv::Mat& targetSegments, const unsigne
 	cv::Mat element = cv::getStructuringElement( dilation_type,
 									   cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),
 									   cv::Point( dilation_size, dilation_size ) );
-	/// Apply the dilation operation
+	/// Apply the erosion operation
 	cv::erode(threshold, threshold, element);
+
+	/// Apply the dilation operation
+	cv::dilate(threshold, threshold, element);
 
 	threshold /= 255;
 	threshold *= (idx * 64);
