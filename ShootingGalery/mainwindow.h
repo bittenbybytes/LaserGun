@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <opencv2/opencv.hpp>
+#include "TargetController.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,9 +22,15 @@ private:
 
     cv::VideoCapture* cam;
 
+	QString targetDevPath;
+	TargetController targetController;
+
 private slots:
     void updateCamImage();
     void connectToCam();
+	void connectToTarget();
+	void updateTargetDevPath(QString path);
+	void targetButtonClicked();
 
 };
 

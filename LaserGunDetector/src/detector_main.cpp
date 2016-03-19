@@ -65,6 +65,7 @@ int main() {
 	cv::Mat targetSegments;
 
 	TargetController target;
+	target.init();
 	target.alldown();
 
 	target.allup();
