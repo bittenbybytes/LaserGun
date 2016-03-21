@@ -5,12 +5,12 @@
 #include <QDir>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+	QMainWindow(parent),
+	ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
-    connect(ui->ButtonConnectCam, SIGNAL(clicked()), this, SLOT(connectToCam()));
+	connect(ui->ButtonConnectCam, SIGNAL(clicked()), this, SLOT(connectToCam()));
 	connect(ui->ButtonConnectTarget, SIGNAL(clicked()), this, SLOT(connectToTarget()));
 
 	QDir dir("/dev","tty*", QDir::Name, QDir::System);
@@ -21,10 +21,14 @@ MainWindow::MainWindow(QWidget *parent) :
 		QFileInfoList files = dir.entryInfoList();
 		foreach (QFileInfo file, files)
 		{
-				ui->TargetsComboBox->addItem(file.filePath());
+			ui->TargetsComboBox->addItem(file.filePath());
 		}
 
-		targetDevPath = files.at(0).filePath();
+		if (files.size() > 0)
+			targetDevPath = files.at(0).filePath();
+		else
+			targetDevPath = "";
+
 		std::cout <<"default dev file: " << targetDevPath.toStdString() << std::endl;
 	}
 
@@ -33,51 +37,64 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+	delete ui;
 }
 
- void MainWindow::updateCamImage()
- {
-     cv::Mat frame;
-     bool bNewFrame = cam->read(frame);
+void displayImage(cv::Mat frame, QGraphicsView* view)
+{
+	QGraphicsScene* scene = new QGraphicsScene;
 
-     if (bNewFrame)
-     {
-        QGraphicsScene* scene = new QGraphicsScene;
+	scene->setSceneRect(0, 0, view->width(), view->height());
 
-        scene->setSceneRect(0, 0, ui->LiveView->width(), ui->LiveView->height());
+	cv::Mat temp;
+	cv::cvtColor(frame, temp, CV_BGR2RGB);
+	QImage qImage((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
+	qImage.bits();
 
-        cv::Mat temp;
-        cv::cvtColor(frame, temp, CV_BGR2RGB);
-        QImage qImage((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
-        qImage.bits();
+	scene->clear();
 
-        scene->clear();
+	scene->addPixmap(QPixmap::fromImage(qImage));
+	scene->update();
 
-        scene->addPixmap(QPixmap::fromImage(qImage));
-        scene->update();
+	view->setScene(scene);
 
-        ui->LiveView->setScene(scene);
-        //ui->LiveView->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
-        ui->LiveView->update();
-     }
- }
+	view->update();
+}
+
+void MainWindow::updateCamImage()
+{
+	cv::Mat frame;
+	bool bNewFrame = cam->read(frame);
+
+	if (bNewFrame)
+	{
+
+		int targetHit = detector.detectHit(frame);
+
+		displayImage(frame, ui->LiveView);
+
+		if(targetHit <= 0)
+		{
+			targetController.hit(targetHit);
+		}
+	}
+}
 
 void MainWindow::connectToCam()
 {
-    cam = new cv::VideoCapture(-1);
+	cam = new cv::VideoCapture(-1);
 
-    if (!cam->isOpened())
-    {
-        std::cout << "Error:  no webcam available!!!" << std::endl;
-    }
-    else
-    {
-        QTimer* timer = new QTimer(this);
+	if (!cam->isOpened())
+	{
+		std::cout << "Error:  no webcam available!!!" << std::endl;
+	}
+	else
+	{
+		QTimer* timer = new QTimer(this);
 
-        connect(timer, SIGNAL(timeout()), this, SLOT(updateCamImage()));
-        timer->start(30);
-    }
+		connect(timer, SIGNAL(timeout()), this, SLOT(updateCamImage()));
+		timer->start(30);
+	}
 }
 
 void MainWindow::updateTargetDevPath(QString path)

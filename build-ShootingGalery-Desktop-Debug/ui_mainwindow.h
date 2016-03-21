@@ -72,11 +72,11 @@ public:
         buttonDown = new QPushButton(centralWidget);
         buttonDown->setObjectName(QStringLiteral("buttonDown"));
         buttonDown->setEnabled(false);
-        buttonDown->setGeometry(QRect(620, 0, 41, 27));
+        buttonDown->setGeometry(QRect(620, 0, 51, 27));
         buttonUp = new QPushButton(centralWidget);
         buttonUp->setObjectName(QStringLiteral("buttonUp"));
         buttonUp->setEnabled(false);
-        buttonUp->setGeometry(QRect(660, 0, 41, 27));
+        buttonUp->setGeometry(QRect(670, 0, 41, 27));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));

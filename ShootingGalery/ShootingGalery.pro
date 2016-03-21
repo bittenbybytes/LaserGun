@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp\
-        TargetController.cpp
+        TargetController.cpp \
+    ShotDetector.cpp
 
 HEADERS  += mainwindow.h\
-        TargetController.h
+        TargetController.h \
+    ShotDetector.h
 
 FORMS    += mainwindow.ui
 

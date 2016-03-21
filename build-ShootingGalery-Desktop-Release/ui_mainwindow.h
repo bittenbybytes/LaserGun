@@ -34,8 +34,10 @@ public:
     QComboBox *comboBox;
     QPushButton *ButtonConnectCam;
     QGraphicsView *LiveView;
-    QComboBox *comboBox_2;
-    QPushButton *pushButton_2;
+    QComboBox *TargetsComboBox;
+    QPushButton *ButtonConnectTarget;
+    QPushButton *buttonDown;
+    QPushButton *buttonUp;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -61,12 +63,20 @@ public:
         LiveView->setGeometry(QRect(10, 40, 711, 491));
         LiveView->setMinimumSize(QSize(0, 192));
         LiveView->setSceneRect(QRectF(0, 0, 640, 480));
-        comboBox_2 = new QComboBox(centralWidget);
-        comboBox_2->setObjectName(QStringLiteral("comboBox_2"));
-        comboBox_2->setGeometry(QRect(290, 0, 85, 27));
-        pushButton_2 = new QPushButton(centralWidget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-        pushButton_2->setGeometry(QRect(380, 0, 131, 27));
+        TargetsComboBox = new QComboBox(centralWidget);
+        TargetsComboBox->setObjectName(QStringLiteral("TargetsComboBox"));
+        TargetsComboBox->setGeometry(QRect(290, 0, 171, 27));
+        ButtonConnectTarget = new QPushButton(centralWidget);
+        ButtonConnectTarget->setObjectName(QStringLiteral("ButtonConnectTarget"));
+        ButtonConnectTarget->setGeometry(QRect(470, 0, 131, 27));
+        buttonDown = new QPushButton(centralWidget);
+        buttonDown->setObjectName(QStringLiteral("buttonDown"));
+        buttonDown->setEnabled(false);
+        buttonDown->setGeometry(QRect(620, 0, 51, 27));
+        buttonUp = new QPushButton(centralWidget);
+        buttonUp->setObjectName(QStringLiteral("buttonUp"));
+        buttonUp->setEnabled(false);
+        buttonUp->setGeometry(QRect(670, 0, 41, 27));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -79,7 +89,6 @@ public:
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
 
-
         retranslateUi(MainWindow);
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -89,7 +98,9 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         ButtonConnectCam->setText(QApplication::translate("MainWindow", "Connect Cam", 0));
-        pushButton_2->setText(QApplication::translate("MainWindow", "Connect Targets", 0));
+        ButtonConnectTarget->setText(QApplication::translate("MainWindow", "Connect Targets", 0));
+        buttonDown->setText(QApplication::translate("MainWindow", "Down", 0));
+        buttonUp->setText(QApplication::translate("MainWindow", "Up", 0));
     } // retranslateUi
 
 };

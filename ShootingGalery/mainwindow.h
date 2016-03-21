@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <opencv2/opencv.hpp>
 #include "TargetController.h"
+#include "ShotDetector.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,7 @@ private:
 
 	QString targetDevPath;
 	TargetController targetController;
+    ShotDetector detector;
 
 private slots:
     void updateCamImage();
