@@ -24,22 +24,32 @@
      </rect>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="CamIndexComboBox">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
-      <width>85</width>
+      <width>111</width>
       <height>27</height>
      </rect>
     </property>
+    <item>
+     <property name="text">
+      <string>Default</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Alternative</string>
+     </property>
+    </item>
    </widget>
    <widget class="QPushButton" name="ButtonConnectCam">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>130</x>
       <y>0</y>
-      <width>91</width>
+      <width>101</width>
       <height>27</height>
      </rect>
     </property>
@@ -124,6 +134,19 @@
     </property>
     <property name="text">
      <string>Up</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ButtonDetect">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>0</y>
+      <width>61</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Detect</string>
     </property>
    </widget>
   </widget>

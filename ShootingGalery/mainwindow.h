@@ -22,6 +22,7 @@ private:
     Ui::MainWindow *ui;
 
     cv::VideoCapture* cam;
+	int camIndex;
 
 	QString targetDevPath;
 	TargetController targetController;
@@ -33,7 +34,11 @@ private slots:
 	void connectToTarget();
 	void updateTargetDevPath(QString path);
 	void targetButtonClicked();
+	void updateCamIndex(int index);
+	void detectTargets();
 
 };
+
+
 
 #endif // MAINWINDOW_H

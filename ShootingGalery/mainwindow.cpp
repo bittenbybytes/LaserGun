@@ -3,6 +3,14 @@
 
 #include <QTimer>
 #include <QDir>
+#include <QThread>
+
+const char noDevString[] = "no device found";
+
+void sleep(int ms)
+{
+	QThread::msleep(ms);
+}
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -12,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->ButtonConnectCam, SIGNAL(clicked()), this, SLOT(connectToCam()));
 	connect(ui->ButtonConnectTarget, SIGNAL(clicked()), this, SLOT(connectToTarget()));
+
+	connect(ui->ButtonDetect, SIGNAL(clicked()), this, SLOT(detectTargets()));
 
 	QDir dir("/dev","tty*", QDir::Name, QDir::System);
 	dir.setNameFilters( QStringList() << "ttyACM*" << "ttyUSB*");
@@ -27,12 +37,21 @@ MainWindow::MainWindow(QWidget *parent) :
 		if (files.size() > 0)
 			targetDevPath = files.at(0).filePath();
 		else
+		{
 			targetDevPath = "";
+			ui->TargetsComboBox->addItem(noDevString);
+		}
 
 		std::cout <<"default dev file: " << targetDevPath.toStdString() << std::endl;
 	}
 
 	connect(ui->TargetsComboBox, SIGNAL(activated(QString)), this, SLOT(updateTargetDevPath(QString)));
+
+	camIndex = 0;
+	connect(ui->CamIndexComboBox, SIGNAL(activated(int)), this, SLOT(updateCamIndex(int)));
+
+	cam = NULL;
+
 }
 
 MainWindow::~MainWindow()
@@ -82,7 +101,13 @@ void MainWindow::updateCamImage()
 
 void MainWindow::connectToCam()
 {
-	cam = new cv::VideoCapture(-1);
+	if(cam != NULL)
+	{
+		delete cam;
+		cam = NULL;
+	}
+
+	cam = new cv::VideoCapture(camIndex);
 
 	if (!cam->isOpened())
 	{
@@ -104,6 +129,8 @@ void MainWindow::updateTargetDevPath(QString path)
 	std::cout <<"updated dev file: " << targetDevPath.toStdString() << std::endl;
 }
 
+
+
 void MainWindow::connectToTarget()
 {
 	targetController.init(targetDevPath.toStdString());
@@ -123,3 +150,41 @@ void MainWindow::targetButtonClicked()
 	else if (sender() == ui->buttonUp)
 		targetController.allup();
 }
+
+
+void MainWindow::updateCamIndex(int index)
+{
+	camIndex = index;
+}
+
+void MainWindow::detectTargets()
+{
+	targetController.alldown();
+
+	cv::Mat frame;
+
+	if( cam->read(frame));
+		detector.resetTargetSegments(frame.size());
+
+	sleep(2000);
+
+	for (int i =0; i<2; i++)
+	{
+		targetController.up(i);
+		sleep(2000);
+
+		for (int var = 0; var < 10; var++)
+		{
+			cam->read(frame);
+		}
+
+		if( cam->read(frame))
+			detector.detectTargetSegment(frame, i);
+		else
+			std::cout << "Error reading frame!!" << std::endl;
+
+		targetController.down(i);
+		sleep(2000);
+	}
+}
+

@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ShootingGalery
 TEMPLATE = app
 
+CONFIG += testlib
 
 SOURCES += main.cpp\
         mainwindow.cpp\

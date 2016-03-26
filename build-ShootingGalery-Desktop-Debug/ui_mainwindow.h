@@ -31,13 +31,14 @@ class Ui_MainWindow
 public:
     QWidget *centralWidget;
     QLCDNumber *lcdNumber;
-    QComboBox *comboBox;
+    QComboBox *CamIndexComboBox;
     QPushButton *ButtonConnectCam;
     QGraphicsView *LiveView;
     QComboBox *TargetsComboBox;
     QPushButton *ButtonConnectTarget;
     QPushButton *buttonDown;
     QPushButton *buttonUp;
+    QPushButton *ButtonDetect;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -52,12 +53,12 @@ public:
         lcdNumber = new QLCDNumber(centralWidget);
         lcdNumber->setObjectName(QStringLiteral("lcdNumber"));
         lcdNumber->setGeometry(QRect(320, 40, 64, 23));
-        comboBox = new QComboBox(centralWidget);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
-        comboBox->setGeometry(QRect(0, 0, 85, 27));
+        CamIndexComboBox = new QComboBox(centralWidget);
+        CamIndexComboBox->setObjectName(QStringLiteral("CamIndexComboBox"));
+        CamIndexComboBox->setGeometry(QRect(10, 0, 111, 27));
         ButtonConnectCam = new QPushButton(centralWidget);
         ButtonConnectCam->setObjectName(QStringLiteral("ButtonConnectCam"));
-        ButtonConnectCam->setGeometry(QRect(90, 0, 91, 27));
+        ButtonConnectCam->setGeometry(QRect(130, 0, 101, 27));
         LiveView = new QGraphicsView(centralWidget);
         LiveView->setObjectName(QStringLiteral("LiveView"));
         LiveView->setGeometry(QRect(10, 40, 711, 491));
@@ -77,6 +78,9 @@ public:
         buttonUp->setObjectName(QStringLiteral("buttonUp"));
         buttonUp->setEnabled(false);
         buttonUp->setGeometry(QRect(670, 0, 41, 27));
+        ButtonDetect = new QPushButton(centralWidget);
+        ButtonDetect->setObjectName(QStringLiteral("ButtonDetect"));
+        ButtonDetect->setGeometry(QRect(740, 0, 61, 27));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -97,10 +101,16 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
+        CamIndexComboBox->clear();
+        CamIndexComboBox->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "Default", 0)
+         << QApplication::translate("MainWindow", "Alternative", 0)
+        );
         ButtonConnectCam->setText(QApplication::translate("MainWindow", "Connect Cam", 0));
         ButtonConnectTarget->setText(QApplication::translate("MainWindow", "Connect Targets", 0));
         buttonDown->setText(QApplication::translate("MainWindow", "Down", 0));
         buttonUp->setText(QApplication::translate("MainWindow", "Up", 0));
+        ButtonDetect->setText(QApplication::translate("MainWindow", "Detect", 0));
     } // retranslateUi
 
 };
