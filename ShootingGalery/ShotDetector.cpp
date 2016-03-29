@@ -51,7 +51,7 @@ int ShotDetector::detectTargetSegment(cv::Mat camImg, int index)
 
 	unsigned char rotation = 128; // 255 = red
 	cv::add(camImgHSV, cv::Scalar(rotation, 0, 0), camImgHSV);
-	cv::inRange(camImgHSV, cv::Scalar(100, 100, 80), cv::Scalar(160, 255, 255), threshold);
+	cv::inRange(camImgHSV, cv::Scalar(100, 100, 80), cv::Scalar(140, 255, 255), threshold);
 	int dilation_type = cv::MORPH_RECT;
 
 	int dilation_size = 2;
@@ -60,10 +60,10 @@ int ShotDetector::detectTargetSegment(cv::Mat camImg, int index)
 									   cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),
 									   cv::Point( dilation_size, dilation_size ) );
 	/// Apply the erosion operation
-	cv::erode(threshold, threshold, element);
+	//cv::erode(threshold, threshold, element);
 
 	/// Apply the dilation operation
-	cv::dilate(threshold, threshold, element);
+	//cv::dilate(threshold, threshold, element);
 
 	threshold /= 255;
 	threshold *= (index+1);
@@ -75,6 +75,7 @@ int ShotDetector::detectTargetSegment(cv::Mat camImg, int index)
 
 	cv::namedWindow("Threshold");
 	cv::imshow("Threshold", targetSegments *64);
+	cv::waitKey(1);
 }
 
 void ShotDetector::resetTargetSegments(cv::Size frameSize)

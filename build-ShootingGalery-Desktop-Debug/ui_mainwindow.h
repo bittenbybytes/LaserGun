@@ -20,6 +20,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
@@ -39,6 +40,9 @@ public:
     QPushButton *buttonDown;
     QPushButton *buttonUp;
     QPushButton *ButtonDetect;
+    QSpinBox *spinBoxHueUpper;
+    QSpinBox *spinBoxHueLower;
+    QPushButton *pushButtonTune;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -81,6 +85,15 @@ public:
         ButtonDetect = new QPushButton(centralWidget);
         ButtonDetect->setObjectName(QStringLiteral("ButtonDetect"));
         ButtonDetect->setGeometry(QRect(740, 0, 61, 27));
+        spinBoxHueUpper = new QSpinBox(centralWidget);
+        spinBoxHueUpper->setObjectName(QStringLiteral("spinBoxHueUpper"));
+        spinBoxHueUpper->setGeometry(QRect(750, 140, 51, 27));
+        spinBoxHueLower = new QSpinBox(centralWidget);
+        spinBoxHueLower->setObjectName(QStringLiteral("spinBoxHueLower"));
+        spinBoxHueLower->setGeometry(QRect(750, 170, 51, 27));
+        pushButtonTune = new QPushButton(centralWidget);
+        pushButtonTune->setObjectName(QStringLiteral("pushButtonTune"));
+        pushButtonTune->setGeometry(QRect(750, 110, 51, 27));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -111,6 +124,7 @@ public:
         buttonDown->setText(QApplication::translate("MainWindow", "Down", 0));
         buttonUp->setText(QApplication::translate("MainWindow", "Up", 0));
         ButtonDetect->setText(QApplication::translate("MainWindow", "Detect", 0));
+        pushButtonTune->setText(QApplication::translate("MainWindow", "Tune", 0));
     } // retranslateUi
 
 };

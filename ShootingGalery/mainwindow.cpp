@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->ButtonDetect, SIGNAL(clicked()), this, SLOT(detectTargets()));
 
+	connect(ui->pushButtonTune, SIGNAL(clicked()), this, SLOT(tune()));
+
 	QDir dir("/dev","tty*", QDir::Name, QDir::System);
 	dir.setNameFilters( QStringList() << "ttyACM*" << "ttyUSB*");
 
@@ -96,6 +98,8 @@ void MainWindow::updateCamImage()
 		{
 			targetController.hit(targetHit);
 		}
+		detector.resetTargetSegments(frame.size());
+		detector.detectTargetSegment(frame, 0);
 	}
 }
 
@@ -163,7 +167,7 @@ void MainWindow::detectTargets()
 
 	cv::Mat frame;
 
-	if( cam->read(frame));
+	if( cam->read(frame))
 		detector.resetTargetSegments(frame.size());
 
 	sleep(2000);
@@ -185,6 +189,17 @@ void MainWindow::detectTargets()
 
 		targetController.down(i);
 		sleep(2000);
+	}
+}
+
+void MainWindow::tune()
+{
+	cv::Mat frame;
+
+	if( cam->read(frame))
+	{
+		detector.resetTargetSegments(frame.size());
+		detector.detectTargetSegment(frame, 0);
 	}
 }
 

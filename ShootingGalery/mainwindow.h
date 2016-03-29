@@ -36,6 +36,7 @@ private slots:
 	void targetButtonClicked();
 	void updateCamIndex(int index);
 	void detectTargets();
+	void tune();
 
 };
 
