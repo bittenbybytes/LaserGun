@@ -12,30 +12,31 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+	explicit MainWindow(QWidget *parent = 0);
+	~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+	Ui::MainWindow *ui;
 
-    cv::VideoCapture* cam;
+	cv::VideoCapture* cam;
 	int camIndex;
 
 	QString targetDevPath;
 	TargetController targetController;
-    ShotDetector detector;
+	ShotDetector detector;
 
 private slots:
-    void updateCamImage();
-    void connectToCam();
+	void updateCamImage();
+	void connectToCam();
 	void connectToTarget();
 	void updateTargetDevPath(QString path);
 	void targetButtonClicked();
 	void updateCamIndex(int index);
 	void detectTargets();
+	void updateDetectorSettings();
 	void tune();
 
 };

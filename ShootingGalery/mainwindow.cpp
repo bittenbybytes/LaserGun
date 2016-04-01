@@ -54,6 +54,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	cam = NULL;
 
+	ui->spinBoxHueLower->setRange(80,128);
+	ui->spinBoxHueLower->setValue(detector.hueMin);
+	connect(ui->spinBoxHueLower, SIGNAL(valueChanged(int)), this, SLOT(updateDetectorSettings()));
+
+	ui->spinBoxHueUpper->setRange(128,160);
+	ui->spinBoxHueUpper->setValue(detector.hueMax);
+	connect(ui->spinBoxHueUpper, SIGNAL(valueChanged(int)), this, SLOT(updateDetectorSettings()));
+
+	detector.markShots = true;
 }
 
 MainWindow::~MainWindow()
@@ -94,12 +103,10 @@ void MainWindow::updateCamImage()
 
 		displayImage(frame, ui->LiveView);
 
-		if(targetHit <= 0)
+		if(targetHit >= 0)
 		{
 			targetController.hit(targetHit);
 		}
-		detector.resetTargetSegments(frame.size());
-		detector.detectTargetSegment(frame, 0);
 	}
 }
 
@@ -190,6 +197,14 @@ void MainWindow::detectTargets()
 		targetController.down(i);
 		sleep(2000);
 	}
+}
+
+void MainWindow::updateDetectorSettings()
+{
+	if(sender() == ui->spinBoxHueLower)
+		detector.hueMin = ui->spinBoxHueLower->value();
+	else if(sender() == ui->spinBoxHueUpper)
+		detector.hueMax = ui->spinBoxHueUpper->value();
 }
 
 void MainWindow::tune()

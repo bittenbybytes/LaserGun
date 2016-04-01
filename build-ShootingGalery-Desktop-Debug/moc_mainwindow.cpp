@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[12];
-    char stringdata[142];
+    QByteArrayData data[13];
+    char stringdata[165];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,12 +40,14 @@ QT_MOC_LITERAL(7, 81, 19),
 QT_MOC_LITERAL(8, 101, 14),
 QT_MOC_LITERAL(9, 116, 5),
 QT_MOC_LITERAL(10, 122, 13),
-QT_MOC_LITERAL(11, 136, 4)
+QT_MOC_LITERAL(11, 136, 22),
+QT_MOC_LITERAL(12, 159, 4)
     },
     "MainWindow\0updateCamImage\0\0connectToCam\0"
     "connectToTarget\0updateTargetDevPath\0"
     "path\0targetButtonClicked\0updateCamIndex\0"
-    "index\0detectTargets\0tune\0"
+    "index\0detectTargets\0updateDetectorSettings\0"
+    "tune\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -55,7 +57,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -63,14 +65,15 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   54,    2, 0x08,
-       3,    0,   55,    2, 0x08,
-       4,    0,   56,    2, 0x08,
-       5,    1,   57,    2, 0x08,
-       7,    0,   60,    2, 0x08,
-       8,    1,   61,    2, 0x08,
-      10,    0,   64,    2, 0x08,
-      11,    0,   65,    2, 0x08,
+       1,    0,   59,    2, 0x08,
+       3,    0,   60,    2, 0x08,
+       4,    0,   61,    2, 0x08,
+       5,    1,   62,    2, 0x08,
+       7,    0,   65,    2, 0x08,
+       8,    1,   66,    2, 0x08,
+      10,    0,   69,    2, 0x08,
+      11,    0,   70,    2, 0x08,
+      12,    0,   71,    2, 0x08,
 
  // slots: parameters
     QMetaType::Void,
@@ -79,6 +82,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::QString,    6,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    9,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -97,7 +101,8 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 4: _t->targetButtonClicked(); break;
         case 5: _t->updateCamIndex((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 6: _t->detectTargets(); break;
-        case 7: _t->tune(); break;
+        case 7: _t->updateDetectorSettings(); break;
+        case 8: _t->tune(); break;
         default: ;
         }
     }
@@ -128,13 +133,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 9;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 9)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 8;
+        _id -= 9;
     }
     return _id;
 }
